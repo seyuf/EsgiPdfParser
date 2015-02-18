@@ -72,9 +72,15 @@ exports.getJson = function getJson(date, CallBack){
       var isValidTest = day === 0 ? text.x < padding[0]: day === 6? text.x < padding[6] && text.x > padding[6]: text.x > padding[day-1] && text.x <  padding[day]? true: false;
         if( isValidTest){
           
-          console.log(curText);
+          //console.log(curText);
           if( text.R[0].TS[1] === 60){
+            if(course.room !== ""){
+              Plan.push(course);
+              course = { hours: "", name: "", teachears:"", room:"" };
+            }
             course.hours += curText+" ";
+            
+
           }
 
           if(/^(M\.|Mme)/.test(curText)){
@@ -86,13 +92,10 @@ exports.getJson = function getJson(date, CallBack){
             course.name += curText+" ";
           }
 
-          if(/^\d+$/.test(curText) && curText.length <= 3){
-            if(checkedFirstHours){
+          if(/^\d+$/.test(curText)){
+            if(course.name !== ""){
               Plan.push(course);
               course = { hours: "", name: "", teachears:"", room:"" };
-            }
-            else{
-              checkedFirstHours = true;
             }
           }
           
@@ -109,6 +112,8 @@ exports.getJson = function getJson(date, CallBack){
 
   pdfParser.on("pdfParser_dataError", _.bind(_onPFBinDataError, this));
 
+  // prod /home/madalien/nodeProjects/EsgiPdfParser/server/api/pdftojson/resources/
+  // dev /home/madalien/Documents/GesAlendar/server/api/pdftojson/resources/
   var pdfFilePath =  "/home/madalien/Documents/GesAlendar/server/api/pdftojson/resources/planning.pdf";
 
   pdfParser.loadPDF(pdfFilePath);
